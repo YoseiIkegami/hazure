@@ -11,7 +11,7 @@ const soundData = "data:audio/wav;base64,UklGRjQAAABXQVZFZm10IBAAAAABAAEAQB8AAEA
 function supportsWebGl() {
   try {
     const canvas = document.createElement("canvas");
-    return Boolean(canvas.getContext("webgl") || canvas.getContext("experimental-webgl"));
+    return Boolean(canvas.getContext("webgl2"));
   } catch {
     return false;
   }
@@ -55,14 +55,13 @@ function MachineControls({ onVend, muted, onMute }: { onVend: (index: number) =>
 }
 
 export default function App() {
-  const [webgl, setWebgl] = useState(true);
+  const [webgl] = useState(supportsWebGl);
   const [item, setItem] = useState<MachineItem>(() => pickItem(0));
   const [serial, setSerial] = useState(0);
   const [muted, setMuted] = useState(true);
   const [message, setMessage] = useState("取り出し口は、まだ空です。");
   const plunk = useMemo(() => new Howl({ src: [soundData], volume: 0.35, preload: true }), []);
 
-  useEffect(() => setWebgl(supportsWebGl()), []);
   useEffect(() => () => { plunk.unload(); }, [plunk]);
 
   function vend(index: number) {
